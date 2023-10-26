@@ -11,17 +11,13 @@ import phonenumbers
 clientes_registrados = []
 
 #OOP del cliente con sus funciones
-class Persona:
-    def __init__(self, nombre, apellido, email, num_cel, password):
+class Cliente:
+    def __init__(self, nombre, apellido, email, num_cel, password, num_cuenta):
         self.nombre = nombre
         self.apellido = apellido
         self.email = email
         self.num_cel = num_cel
         self.password = password
-
-class Cliente(Persona):
-    def __init__(self, nombre, apellido, email, num_cel, password, num_cuenta):
-        super().__init__(nombre, apellido, email, num_cel, password)
         self.num_cuenta = num_cuenta
 
     def __str__(self):
@@ -31,20 +27,20 @@ class Cliente(Persona):
         
 
 #Función para validar contraseña usando Regular expresions.
-def validar_contraseña(contraseña):
-    if not re.search(r'[a-z]', contraseña):
+def validar_contrasenia(contrasenia):
+    if not re.search(r'[a-z]', contrasenia):
         return False
     
-    if not re.search(r'[A-Z]', contraseña):
+    if not re.search(r'[A-Z]', contrasenia):
         return False
     
-    if not re.search(r'[0-9]', contraseña):
+    if not re.search(r'[0-9]', contrasenia):
         return False
     
-    if not re.search(r'[!"#$%&/()=?¡¿\-.,]', contraseña):
+    if not re.search(r'[!"#$%&/()=?¡¿\-.,]', contrasenia):
         return False
     
-    if len(contraseña) < 6:
+    if len(contrasenia) < 6:
         return False
     
     return True
@@ -54,8 +50,6 @@ def validar_contraseña(contraseña):
 def validar_correo(email):
     if re.match(r'^[a-zA-Z0-9._%+-]+@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$', email):
         return True
-    else:
-        return False
     
 
 #Funcion para validar telefono usando libreria Phonenumber    
@@ -67,8 +61,7 @@ def validar_telefono(numero_telefono):
         if phonenumbers.is_valid_number(parsed_numero):
             print("Número de celular válido:", phonenumbers.format_number(parsed_numero, phonenumbers.PhoneNumberFormat.E164))
             return phonenumbers.format_number(parsed_numero, phonenumbers.PhoneNumberFormat.E164)  # Retornamos el número válido
-        else:
-            print("Ingrese un número de celular válido (lada + número celular). Inténtelo nuevamente.")
+        
     except phonenumbers.phonenumberutil.NumberParseException:
         print("Número de celular inválido. Inténtelo nuevamente.")
 
@@ -77,26 +70,15 @@ def validar_telefono(numero_telefono):
 def validar_nombre(nombre_cliente):
     nombres = nombre_cliente.split()
 
-    if len(nombres) == 1 or len(nombres) == 2:
-        if all(nombre.isalpha() for nombre in nombres):
-            if len(nombres) == 1:
-                primer_nombre = nombres[0] 
-                return primer_nombre
-            else:
-                return nombres
-        else:
-            print("Los nombres solo deben contener letras.")
-    else:
-        print("Ingresa uno o dos nombres, separados por espacio.")
+    if all(nombre.isalpha() for nombre in nombres):
+        return nombres
 
 
 #Funcion para validar que solo se coloque 1 apellido y que no contenga numeros ni simbolos
 def validar_apellido(nombre):
     if nombre.isalpha():
         return nombre
-    else:
-        print("\n-----------------Error-----------------")
-
+    
 
 #funcion para crear cliente
 def crear_cliente():
@@ -105,37 +87,33 @@ def crear_cliente():
         nombre_cliente = input("Coloque su(s) nombre(s): ").upper()
         if validar_nombre(nombre_cliente):
             break
-        else:
-            continue
+        print("Los nombres solo deben contener letras.")
 
     while True:
         apellido1 = input("Ingrese su apellido paterno: ").upper()
         if validar_apellido(apellido1):
-            break
-        else:
-            print("Favor de colocar tu apellido paterno correctamente")
+            break    
+        print("Favor de colocar tu apellido paterno correctamente")
+
     while True:
         apellido2 = input("Ingrese su apellido materno: ").upper()
         if validar_apellido(apellido2):
             break
-        else:
-            print("Favor de colocar tu apellido materno correctamente")
+        print("Favor de colocar tu apellido materno correctamente")
+
     apellido_cliente = apellido1 + " " + apellido2
 
     while True:
         email_cl = input("Ingrese su email: ")
         if validar_correo(email_cl):
             break
-        else:
-            print("Ingrese un correo electrónico válido.")
+        print("Ingrese un correo electrónico válido.")
 
     while True:
-        num_celular_cl = input("Ingrese un número de celular (lada + número celular): ")
-        num_celular = validar_telefono(num_celular_cl)
-        if num_celular:
+        num_celular = input("Ingrese un número de celular (lada + número celular): ")
+        if validar_telefono(num_celular):
             break
-        else:
-            print("Favor de ingresar un numero de telefono válido.")
+        print("Favor de ingresar un numero de telefono válido.")
 
     while True:
         print(""" La contraseña debe contener:
@@ -146,10 +124,9 @@ def crear_cliente():
               Al menos 6 caracteres
               """)
         passwd = input("Ingrese su contraseña: ")
-        if validar_contraseña(passwd):
+        if validar_contrasenia(passwd):
             break
-        else:
-            print("Por favor, ingresa una contraseña válida.")
+        print("\nPor favor, ingresa una contraseña válida.\n")
 
     numero_cuenta = randint(1000000000,9999999999)
 
@@ -191,7 +168,9 @@ while not finalizar_programa:
     if menu == 1:
         mi_cliente = crear_cliente()
         # Verificar si el cliente ya está registrado
-        cliente_existente = next((cliente for cliente in clientes_registrados if cliente.num_cel == mi_cliente.num_cel or cliente.email == mi_cliente.email), None)
+        cliente_existente = next((cliente for cliente in clientes_registrados 
+                                  if cliente.num_cel == mi_cliente.num_cel or cliente.email == mi_cliente.email),
+                                  None)
         
         if cliente_existente:
             print("Ya existe un cliente con los datos anteriormente registrados")
