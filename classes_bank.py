@@ -1,5 +1,5 @@
-#Base de datos local para almacenar clientes registrados al banco
-clientes_registrados = []
+from database_conn import *
+
 
 #OOP del cliente con sus funciones de depositar y retirar, ademas del inicio de sesión
 class Cliente:
@@ -15,11 +15,11 @@ class Cliente:
         return f"\nCliente: {self.nombre} {self.apellido}\nEmail: {self.email}\nNum. Tel: {self.num_cel}\nNum. de cuenta: {self.num_cuenta}\n"
     
 
-    @staticmethod
-    def iniciar_sesion(num_cel, password):
-        for cliente in clientes_registrados:
-            if cliente.num_cel == num_cel and cliente.password == password:
-                return cliente
-            
-        print("Datos incorrectos.")
-        return None
+    #@staticmethod
+    #def iniciar_sesion(num_cel, password):
+    #    for cliente in clientes_registrados:
+    #        if cliente.num_cel == num_cel and cliente.password == password:
+    #            return cliente
+    #        else:
+    #            print("Datos incorrectos.")
+    #    return None
